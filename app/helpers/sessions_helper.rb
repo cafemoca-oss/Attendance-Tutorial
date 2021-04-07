@@ -11,6 +11,12 @@ module SessionsHelper
   end
   
   def log_out
+    forget(current_user)
+    session.delete(:user_id)
+    @current_user = nil
+  end
+  
+  def log_out
     session.delete(:user_id)
     @current_user = nil
   end
