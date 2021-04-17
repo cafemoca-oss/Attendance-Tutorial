@@ -12,11 +12,23 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       log_in @user
-      flash[:success] = '新規作成に施工しました。'
+      flash[:success] = '新規作成に成功しました。'
       redirect_to @user
     else
       render :new
     end  
+  end
+  
+  def create
+    user = User.find_by(email: params[:session][:email].downcase)
+    if user && user.authenticate(params[:session][:password])
+      log_in user
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+      redirect_to user
+    else
+      flash.now[:danger] = '認証に失敗しました。'
+      render :new
+    end
   end
 
   private
